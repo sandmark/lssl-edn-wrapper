@@ -1,0 +1,6 @@
+[[Event]]
+    EventType = 'DataLoaded'
+    Commands = [{% for l in lines %} {% if forloop.last %}
+    '{{ l|safe }}'
+    {% else %}
+    '{{ l|safe }}', {% endif %} {% endfor %}]
