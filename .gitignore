@@ -2,5 +2,8 @@
 .cpcache/*
 .nrepl-port
 
+# for development
+lssl-config.edn
+
 # generated files
 SFSE/*
