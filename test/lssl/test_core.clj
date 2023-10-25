@@ -14,7 +14,9 @@
               {:attribute :action :var "Containers" :action "Search" :value false}]
              (suit/map->record {:action {:containers {"Pick" true, "Search" false}}})))
     (t/is (= [{:attribute :filter-add :var "Containers" :value [10 11]}]
-             (suit/map->record {:filter-add {:containers [0xa 0xb]}})))))
+             (suit/map->record {:filter-add {:containers [0xa 0xb]}})))
+    (t/is (= [{:attribute :filter-all :value true}]
+             (suit/map->record {:filter-all true})))))
 
 (t/deftest lssl-compiler-test
   (t/testing "Control"
@@ -30,6 +32,10 @@
              (suit/build-papyrus {:attribute :filter :var "Containers" :value true})))
     (t/is (= "cgf \"LSSL:Interface.SetFilter\" \"EMWeap\" true"
              (suit/build-papyrus (first (suit/map->record {:filter {"EMWeap" true}})))))
+
+    (t/testing "SetAllFilters"
+      (t/is (= "cgf \"LSSL:Interface.SetAllFilters\" true"
+               (suit/build-papyrus {:attribute :filter-all :value true}))))
 
     (t/testing "AddToFilter"
       (t/is (= "cgf \"LSSL:Interface.AddToFilter\" \"Containers\" a"

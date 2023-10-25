@@ -18,13 +18,18 @@
 
 (defn- map->record-inner [attr m]
   (letfn [(f [[var v]]
-            (cond (map? v) (map->record-action attr var v)
-                  :else    {:attribute attr :var (keyword->camel var) :value v}))]
+            (if (map? v)
+              (map->record-action attr var v)
+              {:attribute attr :var (keyword->camel var) :value v}))]
     (map f m)))
 
 (defn map->record [config]
   (flatten
-   (map (fn [[attr m]] (map->record-inner attr m)) config)))
+   (map (fn [[attr m]]
+          (if (map? m)
+            (map->record-inner attr m)
+            {:attribute attr :value m}))
+        config)))
 
 (defn dispatch-fn [{:keys [:attribute :value]}]
   (cond (float? value)   [attribute :float]
@@ -44,6 +49,10 @@
 (defmethod build-papyrus [:filter :boolean]
   [{:keys [:value :var]}]
   (format "cgf \"LSSL:Interface.SetFilter\" \"%s\" %s" var value))
+
+(defmethod build-papyrus [:filter-all :boolean]
+  [{:keys [:value]}]
+  (format "cgf \"LSSL:Interface.SetAllFilters\" %s" value))
 
 (defmethod build-papyrus [:action :boolean]
   [{:keys [:var :action :value]}]
