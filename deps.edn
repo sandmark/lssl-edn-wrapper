@@ -1,11 +1,12 @@
-{:paths ["src" "test"]
+{:paths ["src" "test" "resources"]
  :tasks
  {:requires ([lssl.core :as core]
              [selmer.parser :as parser]
-             [clojure.edn :as edn])
+             [clojure.edn :as edn]
+             [clojure.java.io :as io])
 
-  config-file "babashka/lssl-config.edn"
-  template    "babashka/lssl/lssl.toml.selmer"
+  config-file "lssl-config.edn"
+  template    (io/resource "lssl.toml.selmer")
   toml        "SFSE/Plugins/ConsoleCommandRunner/lssl.toml"
 
   config {:depends [config-file]

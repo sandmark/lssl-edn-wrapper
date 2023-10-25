@@ -1,2 +1,6 @@
-lssl/.cpcache/*
-lssl/.nrepl-port
+# clojure caches
+.cpcache/*
+.nrepl-port
+
+# generated files
+SFSE/*
