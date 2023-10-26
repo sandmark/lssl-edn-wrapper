@@ -24,12 +24,11 @@
     (map f m)))
 
 (defn map->record [config]
-  (flatten
-   (map (fn [[attr m]]
-          (if (map? m)
-            (map->record-inner attr m)
-            {:attribute attr :value m}))
-        config)))
+  (letfn [(f [[attr m]]
+            (cond (map? m)             (map->record-inner attr m)
+                  (= :filter-all attr) {:attribute attr :value m :order 0}
+                  :else                {:attribute attr :value m}))]
+    (flatten (map f config))))
 
 (defn double-quote [s] (str "\"" s "\""))
 
@@ -50,8 +49,6 @@
     (str/join " " (cons op (map parameterize args)))))
 
 (defn colls->papyrus [colls]
-  (prn colls)
-  (prn (map coll->papyrus colls))
   (str/join "; " (map coll->papyrus colls)))
 
 (defn record-dispatch-fn [{:keys [:attribute :value]}]
@@ -104,5 +101,8 @@
     (format "hotkey %s %s" var (colls->papyrus value))
     (format "hotkey %s %s" var (coll->papyrus value))))
 
+(defn sort-records [coll]
+  (sort-by #(get % :order ##Inf) coll))
+
 (defn convert [m]
-  (->> m map->record (map build-papyrus)))
+  (->> m map->record sort-records (map build-papyrus)))
