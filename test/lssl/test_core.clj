@@ -4,7 +4,11 @@
 
 (t/deftest utils-test
   (t/testing "Keyword to CamelCase"
-    (t/is (= "HandScannerOnly" (suit/keyword->camel :hand-scanner-only)))))
+    (t/is (= "HandScannerOnly" (suit/keyword->camel :hand-scanner-only))))
+
+  (t/testing "Sort Records"
+    (t/is (= [{:order 0} {}]
+             (suit/sort-records [{} {:order 0}])))))
 
 (t/deftest structure-test
   (t/testing "Control map conversion"
@@ -15,17 +19,17 @@
              (suit/map->record {:action {:containers {"Pick" true, "Search" false}}})))
     (t/is (= [{:attribute :filter-add :var "Containers" :value [10 11]}]
              (suit/map->record {:filter-add {:containers [0xa 0xb]}})))
-    (t/is (= [{:attribute :filter-all :value true}]
+    (t/is (= [{:attribute :filter-all :value true :order 0}]
              (suit/map->record {:filter-all true})))
     (t/is (= [{:attribute :hotkey
                :var       "F2"
                :value     [[:toggle-bool-control :pause-scan] [:cancel-scan] [:pour-anti-freeze]]}]
              (suit/map->record {:hotkey {"F2" [[:toggle-bool-control :pause-scan]
                                                [:cancel-scan]
-                                               [:pour-anti-freeze]]}})))))
-
-(t/deftest build-cgf-test
-  )
+                                               [:pour-anti-freeze]]}})))
+    (t/testing "Ordering"
+      (t/is (= [{:attribute :filter-all :order 0 :value true}]
+               (suit/map->record {:filter-all true}))))))
 
 (t/deftest compile-papyrus-test
   (t/testing "Single cgf call"
