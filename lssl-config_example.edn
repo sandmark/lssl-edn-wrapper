@@ -39,4 +39,8 @@
 
  :action {:terminals  {"Hack" true}
           :doors      {"Pick" true}
-          :containers {"Pick" true "Search" true}}}
+          :containers {"Pick" true "Search" true}}
+
+ :hotkey {"F10" [[:cancel-scan]
+                 ["LSSL:Debugger.PourAntiFreeze"]
+                 ["Debug.Notification" "Scanning canceled, pouring anti-freeze..."]]}}

@@ -16,7 +16,37 @@
     (t/is (= [{:attribute :filter-add :var "Containers" :value [10 11]}]
              (suit/map->record {:filter-add {:containers [0xa 0xb]}})))
     (t/is (= [{:attribute :filter-all :value true}]
-             (suit/map->record {:filter-all true})))))
+             (suit/map->record {:filter-all true})))
+    (t/is (= [{:attribute :hotkey
+               :var       "F2"
+               :value     [[:toggle-bool-control :pause-scan] [:cancel-scan] [:pour-anti-freeze]]}]
+             (suit/map->record {:hotkey {"F2" [[:toggle-bool-control :pause-scan]
+                                               [:cancel-scan]
+                                               [:pour-anti-freeze]]}})))))
+
+(t/deftest build-cgf-test
+  )
+
+(t/deftest compile-papyrus-test
+  (t/testing "Single cgf call"
+    (t/is (= "cgf \"LSSL:Interface.SetFloatControl\" \"ScanRadius\" 5.0"
+             (suit/vec->cgf [:set-float-control :scan-radius 5.0])))
+    (t/is (= "cgf \"LSSL:Debugger.PourAntiFreeze\""
+             (suit/vec->cgf ["LSSL:Debugger.PourAntiFreeze"]))))
+
+  (t/testing "Multi cgf call"
+    (t/is (= "cgf \"LSSL:Interface.AddToFilter\" \"General\" f; cgf \"LSSL:Interface.AddToFilter\" \"General\" a"
+             (suit/vecs->cgf [[:add-to-filter :general 0xf]
+                              [:add-to-filter :general 0xa]]))))
+
+  (t/testing "Single raw call"
+    (t/is (= "player.setav speedmult 100"
+             (suit/coll->papyrus '("player.setav speedmult 100")))))
+
+  (t/testing "Multi raw call"
+    (t/is (= "cgf \"Debug.Notification\" \"Something.\"; player.setav speedmult 400"
+             (suit/colls->papyrus [["Debug.Notification" "Something."]
+                                   '("player.setav speedmult 400")])))))
 
 (t/deftest lssl-compiler-test
   (t/testing "Control"
@@ -57,4 +87,13 @@
 
   (t/testing "Action"
     (t/is (= "cgf \"LSSL:Interface.SetFilterAction\" \"Containers\" \"Pick\" false"
-             (suit/build-papyrus {:attribute :action :var "Containers" :action "Pick" :value false})))))
+             (suit/build-papyrus {:attribute :action :var "Containers" :action "Pick" :value false}))))
+
+  (t/testing "Hotkey"
+    (t/is (= "hotkey F2 cgf \"LSSL:Interface.ToggleBoolControl\" \"PauseScan\"; cgf \"LSSL:Interface.CancelScan\"; cgf \"LSSL:Debugger.PourAntiFreeze\"; player.setav speedmult 100"
+             (suit/build-papyrus {:attribute :hotkey :var "F2" :value [[:toggle-bool-control :pause-scan]
+                                                                       [:cancel-scan]
+                                                                       ["LSSL:Debugger.PourAntiFreeze"]
+                                                                       '("player.setav speedmult 100")]})))
+    (t/is (= "hotkey F3 tgm; tcl"
+             (suit/build-papyrus {:attribute :hotkey :var "F3" :value ['("tgm") '("tcl")]})))))
