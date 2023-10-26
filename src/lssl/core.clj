@@ -50,8 +50,6 @@
     (str/join " " (cons op (map parameterize args)))))
 
 (defn colls->papyrus [colls]
-  (prn colls)
-  (prn (map coll->papyrus colls))
   (str/join "; " (map coll->papyrus colls)))
 
 (defn record-dispatch-fn [{:keys [:attribute :value]}]
