@@ -5,6 +5,8 @@
            :scan-timeout       60.0
            :notify-on-complete true}
 
+ :filter-all false
+
  :filter {:terminals      true
           :doors          true
           :containers     true
