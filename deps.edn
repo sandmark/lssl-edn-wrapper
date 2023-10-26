@@ -1,0 +1,22 @@
+{:paths ["src" "test" "resources"]
+ :tasks
+ {:requires ([lssl.core :as core]
+             [selmer.parser :as parser]
+             [clojure.edn :as edn]
+             [clojure.java.io :as io])
+
+  -config-file "lssl-config.edn"
+  -template    (io/resource "lssl.toml.selmer")
+  -toml-path   "SFSE/Plugins/ConsoleCommandRunner/lssl.toml"
+
+  -config {:depends [-config-file]
+           :task    (edn/read-string (slurp -config-file))}
+
+  -toml-file {:depends [-toml-path]
+              :task    (do (io/make-parents (io/file -toml-path))
+                           -toml-path)}
+
+  build {:depends [-config -template -toml-file]
+         :task    (let [lines (core/convert -config)]
+                    (spit -toml-file (parser/render (slurp -template) {:lines lines}))
+                    (println (slurp -toml-file)))}}}

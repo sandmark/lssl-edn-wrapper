@@ -1,0 +1,48 @@
+{:control {:scan-radius        50.0
+           :scan-interval      1.0
+           :hand-scanner-only  false
+           :allow-stealing     false
+           :scan-timeout       60.0
+           :notify-on-complete true}
+
+ :filter-all false
+
+ :filter {:terminals      true
+          :doors          true
+          :containers     true
+          :books          false
+          :junk           false
+          :food           true
+          :booze          true
+          :drinks         true
+          :apparel        true
+          :neuroamps      true
+          :helmets        true
+          :packs          true
+          :suits          true
+          :assault-rifles true
+          :automatics     true
+          :ballistics     true
+          :chemical       true
+          :cryo           true
+          "EMWeap"        true
+          :explosives     true
+          :fire           true
+          :heavy-gun      true
+          :lasers         true
+          :melee          true
+          :miniguns       true
+          :particle       true
+          :pistols        true
+          :rifles         true
+          :shotguns       true
+          :sniper         true
+          :toolgrip       false}
+
+ :action {:terminals  {"Hack" true}
+          :doors      {"Pick" true}
+          :containers {"Pick" true "Search" true}}
+
+ :hotkey {"F10" [[:cancel-scan]
+                 ["LSSL:Debugger.PourAntiFreeze"]
+                 ["Debug.Notification" "Scanning canceled, pouring anti-freeze..."]]}}
