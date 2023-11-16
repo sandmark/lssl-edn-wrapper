@@ -1,4 +1,14 @@
-{:paths ["src" "test" "resources"]
+{:paths ["src" "resources"]
+
+ :deps
+ {com.taoensso/timbre {:mvn/version "6.3.1"}}
+
+ :aliases
+ {:dev {:extra-paths ["dev/src" "dev/resources" "test"]
+        :extra-deps  {nubank/matcher-combinators  {:mvn/version "3.8.8"}
+                      com.github.liquidz/testdoc  {:mvn/version "1.5.109"}
+                      org.clojure/tools.namespace {:mvn/version "1.4.4"}}}}
+
  :tasks
  {:requires ([lssl.core :as core]
              [selmer.parser :as parser]
