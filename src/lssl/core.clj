@@ -3,9 +3,20 @@
    [aero.core :as aero]
    [lssl.processor :as p]
    [clojure.java.io :as io]
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [clojure.set :as set]
+   [taoensso.timbre :as log]))
 
 (def load-hotkey-cmd "If getini \"bUseConsoleHotkeys:Menu\" == 0; setini \"bUseConsoleHotkeys:Menu\" 1; else cgf \"Debug.Notification\" \"LSSL edn wrapper: failed to load hotkey feature.\"; endif")
+
+(def available-filters
+  (->> [:custom     :terminals :doors   :containers :actors   :valuables :value-junk     :collectables :junk
+        :contraband :resources :keys    :books      :aid      :chems     :food           :booze        :drinks :epic
+        :apparel    :neuroamps :helmets :packs      :suits    :ammo      :assault-rifles :automatics   :ballistics
+        :chemical   :cryo      "EMWeap" :explosives :fire     :heavy-gun :lasers         :melee        :mines
+        :miniguns   :particle  :pistols :rifles     :shotguns :sniper    :thrown         :toolgrip     :unarmed]
+       (map p/keyword->camel)
+       (into #{})))
 
 (defmulti init-key
   (fn [k _] k))
@@ -18,9 +29,16 @@
 (defn init-filters [k coll]
   (->> coll flatten (map (partial vector k)) (map p/transpile)))
 
+(defn missing-filters [coll]
+  (let [lacks (->> coll (map p/keyword->camel) (into #{}) (set/difference available-filters) (into []))]
+    (when (seq lacks)
+      lacks)))
+
 (defmethod init-key :filters [_ {:keys [only except]}]
   (let [enabled  (init-filters :enable only)
         disabled (init-filters :disable except)]
+    (when-let [lacks (missing-filters (flatten (concat only except)))]
+      (log/warnf "Lacking filter(s) found! %s" lacks))
     (concat enabled disabled)))
 
 (defn ops->cmds [coll]
