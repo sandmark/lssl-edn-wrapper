@@ -30,7 +30,9 @@
     (testing "Scan"
       (is (match? {:cmd "cgf \"LSSL:Interface.TryScanNow\" false true"}
                   (sut/transpile [:try-scan-now {:skip-hand-scanner       true
-                                                 :skip-location-exclusion false}])))))
+                                                 :skip-location-exclusion false}])))
+      (is (match? {:cmd #"false false$"}
+                  (sut/transpile [:try-scan-now])))))
 
   (testing "Change Filter States (enable/disable)"
     (testing "Set all Filters Actions"

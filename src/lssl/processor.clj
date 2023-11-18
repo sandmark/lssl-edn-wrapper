@@ -42,8 +42,10 @@
 (defmethod transpile :toggle-control [[_ control]]
   {:cmd (transpile-interface :toggle-bool-control control)})
 
-(defmethod transpile :try-scan-now [[_ {:keys [skip-hand-scanner skip-location-exclusion]}]]
-  {:cmd (transpile-interface :try-scan-now skip-location-exclusion skip-hand-scanner)})
+(defmethod transpile :try-scan-now [[_ opts]]
+  (let [skip-hand-scanner       (get opts :skip-hand-scanner false)
+        skip-location-exclusion (get opts :skip-location-exclusion false)]
+    {:cmd (transpile-interface :try-scan-now skip-location-exclusion skip-hand-scanner)}))
 
 (defmethod transpile :enable-all [[_ bool]]
   {:cmd (transpile-interface :set-all-filters bool)})
