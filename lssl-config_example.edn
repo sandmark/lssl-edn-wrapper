@@ -1,48 +1,52 @@
-{:control {:scan-radius        50.0
-           :scan-interval      1.0
-           :hand-scanner-only  false
-           :allow-stealing     false
-           :scan-timeout       60.0
-           :notify-on-complete true}
+{:aliases
+ {:macros
+  {:close-loot          [[:set :scan-radius 5.0]
+                         [:set :scan-timeout 60.0]]
+   :normal-loot         [[:set :scan-radius 25.0]
+                         [:set :scan-timeout 60.0]]
+   :super-loot          [[:set :scan-radius 250.0]
+                         [:set :scan-timeout 6000.0]]
+   :touch-theft         [[:action :loot false]
+                         [:action :search false]
+                         [:set :scan-radius 1.5]
+                         [:set :allow-stealing true]]
+   :restore-normal-loot [[:set :allow-stealing false]
+                         [:action :loot true]
+                         [:action :search true]]}}
 
- :filter-all false
+ :lssl-config
+ {:controls {:allow-stealing     false
+             :hand-scanner-only  true
+             :notify-on-complete false
+             :pause-scan         false
+             :visual-effect      true
+             :scan-interval      2.0
+             :scan-radius        4.0
+             :scan-timeout       60.0
+             :max-threads        50
+             :verbosity          0}
 
- :filter {:terminals      true
-          :doors          true
-          :containers     true
-          :books          false
-          :junk           false
-          :food           true
-          :booze          true
-          :drinks         true
-          :apparel        true
-          :neuroamps      true
-          :helmets        true
-          :packs          true
-          :suits          true
-          :assault-rifles true
-          :automatics     true
-          :ballistics     true
-          :chemical       true
-          :cryo           true
-          "EMWeap"        true
-          :explosives     true
-          :fire           true
-          :heavy-gun      true
-          :lasers         true
-          :melee          true
-          :miniguns       true
-          :particle       true
-          :pistols        true
-          :rifles         true
-          :shotguns       true
-          :sniper         true
-          :toolgrip       false}
+  :filters {:only [:custom :containers :actors :valuables :value-junk
+                   :collectables :resources :keys :books :aid :chems :epic :ammo :mines :thrown]
 
- :action {:terminals  {"Hack" true}
-          :doors      {"Pick" true}
-          :containers {"Pick" true "Search" true}}
+            :except [:contraband :junk :food :booze :drinks :apparel :neuroamps
+                     :helmets :packs :suits :assault-rifles :automatics :ballistics :chemical
+                     :cryo "EMWeap" :explosives :fire :heavy-gun :lasers :melee :miniguns
+                     :particle :pistols :rifles :shotguns :sniper :toolgrip :unarmed]}
 
- :hotkey {"F10" [[:cancel-scan]
-                 ["LSSL:Debugger.PourAntiFreeze"]
-                 ["Debug.Notification" "Scanning canceled, pouring anti-freeze..."]]}}
+  :actions {:terminals  {:hack true}
+            :doors      {:pick true}
+            :containers {:pick true :search true}
+            :books      {:bypass true}}
+
+  :hotkeys {"F2"       [[:toggle-control :pause-scan]]
+            "F3"       [[:set :scan-radius 10.0]]
+            "F4"       [[:set :scan-radius 50.0]]
+            "Ctrl-F2"  #ref [:aliases :macros :close-loot]
+            "Ctrl-F3"  #ref [:aliases :macros :normal-loot]
+            "Ctrl-F4"  #ref [:aliases :macros :super-loot]
+            "Shift-F2" [[:cancel-scan]]
+            "F10"      [[:query-state :general]]
+            "Ctrl-F10" #ref [:aliases :macros :touch-theft]
+            "Ctrl-F11" #ref [:aliases :macros :restore-normal-loot]}
+  :startup [[:message "LSSL launched with EDN Wrapper!"]]}}
