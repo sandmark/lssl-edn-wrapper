@@ -29,8 +29,8 @@
                   (sut/transpile [:toggle-control :as-control]))))
     (testing "Scan"
       (is (match? {:cmd "cgf \"LSSL:Interface.TryScanNow\" false true"}
-                  (sut/transpile [:scan-now {:skip-hand-scanner       true
-                                             :skip-location-exclusion false}])))))
+                  (sut/transpile [:try-scan-now {:skip-hand-scanner       true
+                                                 :skip-location-exclusion false}])))))
 
   (testing "Change Filter States (enable/disable)"
     (testing "Set all Filters Actions"
