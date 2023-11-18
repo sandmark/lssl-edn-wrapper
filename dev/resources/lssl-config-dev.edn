@@ -1,7 +1,7 @@
 {:vars
  {:guns         [:assault-rifles :automatics :ballistics "EMWeap" :sniper
-                 :heavy-gun :lasers :miniguns :pistols :rifles :shotguns]
-  :granades     [:thrown :chemical :cryo :fire :particle :explosives :mines]
+                 :heavy-gun :lasers :miniguns :pistols :rifles :shotguns :particle]
+  :granades     [:thrown :chemical :cryo :fire :explosives :mines]
   :clothes      [:apparel :neuroamps]
   :armors       [:packs :suits :helmets]
   :foods-drinks [:food :booze :drinks]
