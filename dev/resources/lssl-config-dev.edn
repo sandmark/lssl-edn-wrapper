@@ -4,7 +4,8 @@
   :granades     [:thrown :chemical :cryo :fire :particle :explosives :mines]
   :clothes      [:apparel :neuroamps]
   :armors       [:packs :suits :helmets]
-  :foods-drinks [:food :booze :drinks]}
+  :foods-drinks [:food :booze :drinks]
+  :cutter       0x16758}
 
  :profile
  {:empty {}
@@ -25,7 +26,9 @@
                        :toolgrip :melee :junk :unarmed :contraband]}
    :actions  {:containers {:pick true :search true}
               :books      {:bypass true}
-              :terminals  {:pick true}}}
+              :terminals  {:pick true}}
+   :startup  [[:exclude :containers #ref [:vars :cutter]]
+              [:exclude :actors     #ref [:vars :cutter]]]}
 
   :hotkeys {:hotkeys {"F4"                   [[:action :books :bypass true]
                                               [:message "Books Bypassing is disabled."]]
