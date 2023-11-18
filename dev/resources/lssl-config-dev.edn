@@ -26,7 +26,7 @@
                        :toolgrip :melee :junk :unarmed :contraband]}
    :actions  {:containers {:pick true :search true}
               :books      {:bypass true}
-              :terminals  {:pick true}}
+              :terminals  {:hack true}}
    :startup  [[:exclude :containers #ref [:vars :cutter]]
               [:exclude :actors     #ref [:vars :cutter]]]}
 
