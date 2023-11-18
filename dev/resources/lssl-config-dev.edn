@@ -1,0 +1,40 @@
+{:vars
+ {:guns         [:assault-rifles :automatics :ballistics "EMWeap" :sniper
+                 :heavy-gun :lasers :miniguns :pistols :rifles :shotguns]
+  :granades     [:thrown :chemical :cryo :fire :particle :explosives :mines]
+  :clothes      [:apparel :neuroamps]
+  :armors       [:packs :suits :helmets]
+  :foods-drinks [:food :booze :drinks]}
+
+ :profile
+ {:empty {}
+  :default
+  {:controls {:scan-radius        50.0
+              :scan-interval      1.0
+              :hand-scanner-only  false
+              :allow-stealing     false
+              :scan-timeout       30.0
+              :notify-on-complete true}
+   :filters  {:only   [:terminals :doors        :containers     :actors     :valuables :ammo :keys
+                       :aid       :collectables :resources      :chems      :books     :junk :epic :custom
+                       #ref [:vars :guns]
+                       #ref [:vars :foods-drinks]]
+              :except [#ref [:vars :armors]
+                       #ref [:vars :clothes]
+                       #ref [:vars :granades]
+                       :toolgrip :melee :junk :unarmed :contraband]}
+   :actions  {:containers {:pick true :search true}
+              :books      {:bypass true}
+              :terminals  {:pick true}}}
+
+  :hotkeys {:hotkeys {"F4"                   [[:action :books :bypass true]
+                                              [:message "Books Bypassing is disabled."]]
+                      "Shift-F4"             [[:action :books :bypass true]
+                                              [:message "Books Bypassing is enabled."]]
+                      "Home"                 [[:set :pause-scan true]]
+                      "Shift-Home"           [[:set :pause-scan false]]
+                      "End"                  [[:cancel-scan]]
+                      "Shift-MouseWheelDown" ["player.setav speedmult 100"]
+                      "Shift-MouseWheelUp"   ["player.setav speedmult 400"]}}}
+
+ :lssl-config #merge [#ref [:profile :default] #ref [:profile :hotkeys]]}

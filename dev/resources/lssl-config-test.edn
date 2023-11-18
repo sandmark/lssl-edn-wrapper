@@ -1,0 +1,5 @@
+{:lssl-config
+ {:startup [[:message "second"]
+            [:message "last"]]
+  :filters {:only [:doors]}
+  :hotkeys {"A" ["Something"]}}}

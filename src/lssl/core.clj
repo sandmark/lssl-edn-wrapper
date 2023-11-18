@@ -1,108 +1,49 @@
 (ns lssl.core
-  (:require [clojure.string :as str]))
+  (:require
+   [aero.core :as aero]
+   [lssl.processor :as p]
+   [clojure.java.io :as io]
+   [clojure.string :as str]))
 
-(defn keyword->camel [k]
-  (if (keyword? k)
-    (->> (str/split (name k) #"\-")
-         (map str/capitalize)
-         str/join)
-    k))
+(def load-hotkey-cmd "If getini \"bUseConsoleHotkeys:Menu\" == 0; setini \"bUseConsoleHotkeys:Menu\" 1; else cgf \"Debug.Notification\" \"LSSL edn wrapper: failed to load hotkey feature.\"; endif")
 
-(defn- map->record-action [attribute var m]
-  (map (fn [[action v]]
-         {:attribute attribute
-          :var       (keyword->camel var)
-          :action    action
-          :value     v})
-       m))
+(defmulti init-key
+  (fn [k _] k))
 
-(defn- map->record-inner [attr m]
-  (letfn [(f [[var v]]
-            (if (map? v)
-              (map->record-action attr var v)
-              {:attribute attr :var (keyword->camel var) :value v}))]
-    (map f m)))
+(defmethod init-key :controls [_ controls]
+  (->> controls
+       (map (partial cons :set))
+       (map p/transpile)))
 
-(defn map->record [config]
-  (letfn [(f [[attr m]]
-            (cond (map? m)             (map->record-inner attr m)
-                  (= :filter-all attr) {:attribute attr :value m :order 0}
-                  :else                {:attribute attr :value m}))]
-    (flatten (map f config))))
+(defn init-filters [k coll]
+  (->> coll flatten (map (partial vector k)) (map p/transpile)))
 
-(defn double-quote [s] (str "\"" s "\""))
+(defmethod init-key :filters [_ {:keys [only except]}]
+  (let [enabled  (init-filters :enable only)
+        disabled (init-filters :disable except)]
+    (concat enabled disabled)))
 
-(defn operaterize [op]
-  (if (keyword? op)
-    (double-quote (str "LSSL:Interface." (keyword->camel op)))
-    (double-quote op)))
+(defn ops->cmds [coll]
+  (str/join "; " (map (comp :cmd p/transpile) coll)))
 
-(defn parameterize [param]
-  (cond (keyword? param) (double-quote (str (keyword->camel param)))
-        (string? param)  (double-quote param)
-        (integer? param) (format "%x" param)
-        :else            param))
+(defmethod init-key :hotkeys [_ m]
+  (letfn [(->hotkey [[k ops]]
+            {:cmd (format "hotkey %s %s" k (ops->cmds ops))})]
+    (conj (map ->hotkey m) {:cmd load-hotkey-cmd})))
 
-(defn coll->papyrus [[op & args :as coll]]
-  (if (vector? coll)
-    (str/join " " (cons "cgf" (cons (operaterize op) (map parameterize args))))
-    (str/join " " (cons op (map parameterize args)))))
+(defmethod init-key :startup [_ ops]
+  [{:cmd (ops->cmds ops) :priority 10}])
 
-(defn colls->papyrus [colls]
-  (str/join "; " (map coll->papyrus colls)))
+(defmethod init-key :actions [_ m]
+  (for [[asfilter settings] m
+        [asaction bool]     settings]
+    (p/transpile [:action asfilter asaction bool])))
 
-(defn record-dispatch-fn [{:keys [:attribute :value]}]
-  (cond (float? value)   [attribute :float]
-        (vector? value)  [attribute :vector]
-        (boolean? value) [attribute :boolean]))
+(defn init [{:keys [lssl-config]}]
+  (mapcat (fn [[k v]] (init-key k v)) lssl-config))
 
-(defmulti build-papyrus record-dispatch-fn)
+(defn sort-cmds [coll]
+  (sort-by :priority coll))
 
-(defmethod build-papyrus [:control :float]
-  [{:keys [:var :value]}]
-  (coll->papyrus [:set-float-control var value]))
-
-(defmethod build-papyrus [:control :boolean]
-  [{:keys [:var :value]}]
-  (coll->papyrus [:set-bool-control var value]))
-
-(defmethod build-papyrus [:filter :boolean]
-  [{:keys [:value :var]}]
-  (coll->papyrus [:set-filter var value]))
-
-(defmethod build-papyrus [:filter-all :boolean]
-  [{:keys [:value]}]
-  (coll->papyrus [:set-all-filters value]))
-
-(defmethod build-papyrus [:action :boolean]
-  [{:keys [:var :action :value]}]
-  (coll->papyrus [:set-filter-action var action value]))
-
-(defmethod build-papyrus [:filter-add :vector]
-  [{:keys [:var :value]}]
-  (colls->papyrus (for [val value] [:add-to-filter var val])))
-
-(defmethod build-papyrus [:filter-remove :vector]
-  [{:keys [:var :value]}]
-  (colls->papyrus (for [val value] [:remove-from-filter var val])))
-
-(defmethod build-papyrus [:filter-exclude :vector]
-  [{:keys [:var :value]}]
-  (colls->papyrus (for [val value] [:add-to-exclusion var val])))
-
-(defmethod build-papyrus [:filter-include :vector]
-  [{:keys [:var :value]}]
-  (colls->papyrus (for [val value] [:remove-from-exclusion var val])))
-
-(defmethod build-papyrus [:hotkey :vector]
-  [{:keys [:var :value]}]
-  (if (or (vector? (first value))
-          (list? (first value)))
-    (format "hotkey %s %s" var (colls->papyrus value))
-    (format "hotkey %s %s" var (coll->papyrus value))))
-
-(defn sort-records [coll]
-  (sort-by #(get % :order ##Inf) coll))
-
-(defn convert [m]
-  (->> m map->record sort-records (map build-papyrus)))
+(defn convert [f]
+  (->> f aero/read-config init sort-cmds (map :cmd)))
