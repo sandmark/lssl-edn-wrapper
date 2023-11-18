@@ -26,7 +26,7 @@
       (is (match? {:cmd (m/all-of #"SetBoolControl" #"true$")}
                   (sut/transpile [:set :as-control true])))
       (is (match? {:cmd (m/all-of #"ToggleBoolControl" #"AsControl")}
-                  (sut/transpile [:control/toggle :as-control]))))
+                  (sut/transpile [:toggle-control :as-control]))))
     (testing "Scan"
       (is (match? {:cmd "cgf \"LSSL:Interface.TryScanNow\" false true"}
                   (sut/transpile [:scan-now {:skip-hand-scanner       true

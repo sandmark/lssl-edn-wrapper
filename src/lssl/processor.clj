@@ -39,7 +39,7 @@
          (boolean? val) (transpile-interface :set-bool-control control val)
          :else          (log/error "Invalid value:" call))})
 
-(defmethod transpile :control/toggle [[_ control]]
+(defmethod transpile :toggle-control [[_ control]]
   {:cmd (transpile-interface :toggle-bool-control control)})
 
 (defmethod transpile :scan-now [[_ {:keys [skip-hand-scanner skip-location-exclusion]}]]
