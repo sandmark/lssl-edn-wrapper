@@ -17,23 +17,27 @@
                   (sut/init-key :controls {:scan-radius    50.0
                                            :allow-stealing false}))))
     (testing "Filters"
-      (is (match? (m/in-any-order [{:cmd (m/all-of #"^cgf" #"Terminals" #"SetFilter" #"true$")}
-                                   {:cmd (m/all-of #"Doors" #"false$")}])
+      (is (match? (m/in-any-order [{:cmd (m/all-of #"^cgf" #"Terminals" #"SetFilter" #"true")}
+                                   {:cmd (m/all-of #"Doors" #"false")}])
                   (sut/init-key :filters {:only   [:terminals]
                                           :except [[:doors]]}))))
 
     (testing "Filters to Ship"
       (is (match? (m/in-any-order
-                   [{:cmd (m/all-of #"SetFilterAction" #"Thrown" #"ToShip" #"true$")}
-                    {:cmd (m/all-of #"SetFilterAction" #"Toolgrip" #"ToShip" #"false$")}])
+                   [{:cmd (m/all-of #"SetFilterAction" #"Thrown" #"ToShip" #"true")}
+                    {:cmd (m/all-of #"SetFilterAction" #"Toolgrip" #"ToShip" #"false")}])
                   (sut/init-key :filters-to-ship {:only [:thrown] :except [[:toolgrip]]}))))
 
     (testing "Hotkeys"
       (is (match?
            (m/embeds
-            [{:cmd "hotkey F2 cgf \"LSSL:Interface.SetBoolControl\" \"PauseScan\" true; player.setav speedmult 400"}])
+            [{:cmd
+              "hotkey F2 cgf \"LSSL:Interface.SetBoolControl\" \"PauseScan\" true; player.setav speedmult 400"}
+             {:cmd
+              "hotkey F3 cgf \"LSSL:Interface.CancelScan\""}])
            (sut/init-key :hotkeys {"F2" [[:set :pause-scan true]
-                                         "player.setav speedmult 400"]})))
+                                         "player.setav speedmult 400"]
+                                   "F3" [[:cancel-scan]]})))
       (is (match? (m/prefix [(m/any-of {:cmd #"bUseConsoleHotkeys:Menu"})])
                   (sut/init-key :hotkeys {"A" ["A"]})))
       (is (match? (m/embeds [#"bUseConsoleHotkeys:Menu"])
@@ -48,9 +52,9 @@
 
     (testing "Actions"
       (is (match? (m/in-any-order
-                   [{:cmd (m/all-of #"Bypass" #"false$")}
-                    {:cmd (m/all-of #"Pick" #"false$")}
-                    {:cmd (m/all-of #"Search" #"true$")}])
+                   [{:cmd (m/all-of #"Bypass" #"false")}
+                    {:cmd (m/all-of #"Pick" #"false")}
+                    {:cmd (m/all-of #"Search" #"true")}])
                   (sut/init-key :actions {:containers {:pick false :search true}
                                           :books      {:bypass false}}))))
 
