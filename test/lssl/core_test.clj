@@ -59,7 +59,11 @@
                                           :books      {:bypass false}}))))
 
     (testing "Priority"
-      (is (match? (m/embeds [(m/all-of #"second" #(str/ends-with? % "last\""))])
+      (is (match? (m/embeds [(m/all-of #"second" #(str/ends-with? % "last\";"))])
+                  (sut/convert test-config))))
+
+    (testing "Delimiter"
+      (is (match? (m/embeds [#";$"])
                   (sut/convert test-config)))))
 
   (testing "Logging"

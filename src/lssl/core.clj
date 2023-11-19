@@ -69,8 +69,11 @@
 (defn sort-cmds [coll]
   (sort-by :priority coll))
 
+(defn add-delimiter [s]
+  (str s ";"))
+
 (defn convert [f]
-  (->> f aero/read-config init sort-cmds (map :cmd)))
+  (->> f aero/read-config init sort-cmds (map :cmd) (map add-delimiter)))
 
 (comment
   (init (aero/read-config (io/resource "lssl-config-dev.edn"))))
