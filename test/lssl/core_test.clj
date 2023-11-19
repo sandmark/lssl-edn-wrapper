@@ -22,6 +22,12 @@
                   (sut/init-key :filters {:only   [:terminals]
                                           :except [[:doors]]}))))
 
+    (testing "Filters to Ship"
+      (is (match? (m/in-any-order
+                   [{:cmd (m/all-of #"SetFilterAction" #"Thrown" #"ToShip" #"true$")}
+                    {:cmd (m/all-of #"SetFilterAction" #"Toolgrip" #"ToShip" #"false$")}])
+                  (sut/init-key :filters-to-ship {:only [:thrown] :except [[:toolgrip]]}))))
+
     (testing "Hotkeys"
       (is (match?
            (m/embeds

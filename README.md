@@ -143,6 +143,8 @@ This is the same notation as `:startup`, but lots of lines can be defined elsewh
 In the above, `:close-loot`, `:normal-loot`, and `:super-loot` are defined outside of `:lssl-config`,
 and the actual `:hotkeys` refer to them using `#ref`.
 
+For more informations about `#ref` and other features, See https://github.com/juxt/aero .
+
 ## EDN Wrapper APIs
 
 ### General Control
