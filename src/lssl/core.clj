@@ -14,7 +14,8 @@
         :contraband :resources :keys    :books      :aid      :chems     :food           :booze        :drinks :epic
         :apparel    :neuroamps :helmets :packs      :suits    :ammo      :assault-rifles :automatics   :ballistics
         :chemical   :cryo      "EMWeap" :explosives :fire     :heavy-gun :lasers         :melee        :mines
-        :miniguns   :particle  :pistols :rifles     :shotguns :sniper    :thrown         :toolgrip     :unarmed]
+        :miniguns   :particle  :pistols :rifles     :shotguns :sniper    :thrown         :toolgrip     :unarmed
+        :flora      :mining]
        (map p/keyword->camel)
        (into #{})))
 
