@@ -1,4 +1,4 @@
-{:vars
+{:aliases
  {:guns         [:assault-rifles :automatics :ballistics "EMWeap" :sniper
                  :heavy-gun :lasers :miniguns :pistols :rifles :shotguns :particle]
   :granades     [:thrown :chemical :cryo :fire :explosives :mines]
@@ -9,6 +9,7 @@
 
  :profile
  {:empty {}
+
   :default
   {:controls {:scan-radius        50.0
               :scan-interval      1.0
@@ -16,21 +17,37 @@
               :allow-stealing     false
               :scan-timeout       30.0
               :notify-on-complete true}
-   :filters  {:only   [:terminals :doors        :containers     :actors     :valuables :ammo :keys
-                       :aid       :collectables :resources      :chems      :books     :junk :epic :custom
-                       #ref [:vars :guns]
-                       #ref [:vars :foods-drinks]]
-              :except [#ref [:vars :armors]
-                       #ref [:vars :clothes]
-                       #ref [:vars :granades]
-                       :toolgrip :melee :junk :unarmed :contraband]}
-   :actions  {:containers {:pick true :search true}
-              :books      {:bypass true}
-              :terminals  {:hack true}}
-   :startup  [[:exclude :containers #ref [:vars :cutter]]
-              [:exclude :actors     #ref [:vars :cutter]]]}
 
-  :hotkeys {:hotkeys {"F4"                   [[:action :books :bypass true]
+   :filters {:only [:terminals :doors        :containers :actors :valuables :ammo :keys
+                    :aid       :collectables :resources  :chems  :books     :epic :custom
+                    :mining    :flora
+                    #ref [:aliases :guns]
+                    #ref [:aliases :foods-drinks]
+                    ]
+
+             :except [:toolgrip :melee :junk :unarmed :contraband :value-junk
+                      #ref [:aliases :armors]
+                      #ref [:aliases :clothes]
+                      #ref [:aliases :granades]]}
+
+   :filters-to-ship {:only   [:toolgrip :melee :junk :unarmed :contraband :value-junk :books :chems
+                              :mining   :flora
+                              #ref [:aliases :armors]
+                              #ref [:aliases :clothes]
+                              #ref [:aliases :granades]
+                              #ref [:aliases :guns]
+                              #ref [:aliases :foods-drinks]]
+                     :except [:custom :ammo :keys :aid :epic]}
+
+   :actions {:containers {:pick true :search true}
+             :books      {:bypass true}
+             :terminals  {:hack true}}
+   :startup [[:exclude :containers #ref [:aliases :cutter]]
+             [:exclude :actors     #ref [:aliases :cutter]]]}
+
+  :hotkeys {:hotkeys {"F2"                   [[:query-state :general]]
+                      "F3"                   [[:query-state :cancel]]
+                      "F4"                   [[:action :books :bypass true]
                                               [:message "Books Bypassing is disabled."]]
                       "Shift-F4"             [[:action :books :bypass true]
                                               [:message "Books Bypassing is enabled."]]
@@ -40,4 +57,6 @@
                       "Shift-MouseWheelDown" ["player.setav speedmult 100"]
                       "Shift-MouseWheelUp"   ["player.setav speedmult 400"]}}}
 
- :lssl-config #merge [#ref [:profile :default] #ref [:profile :hotkeys]]}
+ :lssl-config #merge [#ref [:profile :empty]
+                      #ref [:profile :default]
+                      #ref [:profile :hotkeys]]}
