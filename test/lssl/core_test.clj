@@ -22,6 +22,12 @@
                   (sut/init-key :filters {:only   [:terminals]
                                           :except [[:doors]]}))))
 
+    (testing "Filters to Ship"
+      (is (match? (m/in-any-order
+                   [{:cmd (m/all-of #"SetFilterAction" #"Thrown" #"ToShip" #"true$")}
+                    {:cmd (m/all-of #"SetFilterAction" #"Toolgrip" #"ToShip" #"false$")}])
+                  (sut/init-key :filters-to-ship {:only [:thrown] :except [[:toolgrip]]}))))
+
     (testing "Hotkeys"
       (is (match?
            (m/embeds
@@ -50,4 +56,16 @@
 
     (testing "Priority"
       (is (match? (m/embeds [(m/all-of #"second" #(str/ends-with? % "last\""))])
-                  (sut/convert test-config))))))
+                  (sut/convert test-config)))))
+
+  (testing "Logging"
+    (testing "Filter"
+      (testing "Missing"
+        (is (match? #"Lacking filter\(s\) found!"
+                    (with-out-str
+                      (sut/init {:lssl-config {:filters {:only [:custom]}}}))))
+        (is (match? ""
+                    (with-out-str
+                      (let [[e & rest] (into [] sut/available-filters)]
+                        (sut/init {:lssl-config
+                                   {:filters {:only rest :except [[e]]}}})))))))))
