@@ -60,7 +60,16 @@ Just make two lists of filters, one for enabled, another one for disabled.
 
 Note that the filter "EMWeap" must be formed as a string, not a keyword.
 
-`:EMWeap` will be converted to `"Emweap"` according to the capitalize-rule, but there's no such filter, of course not.
+According to the capitalize-rule, `:EMWeap` will be converted to `"Emweap"` which doesn't exist.
+
+### Filters to Ship
+Similar to `:filters`, multiple `ToShip` actions can be set at a time in `:filters-to-ship`.
+
+`:filters-to-ship [:only [:mining :flora] :except [:mines]]` generates three lines:
+
+- `cgf "LSSL:Interface.SetFilterAction" "Mining" "ToShip" true`
+- `cgf "LSSL:Interface.SetFilterAction" "Flora" "ToShip" true`
+- `cgf "LSSL:Interface.SetFilterAction" "Mines" "ToShip" false`
 
 ### Actions
 `:actions {:containers {:pick false :search true}}` will be expanded to two lines of cgf:
