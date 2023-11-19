@@ -24,7 +24,10 @@
              :scan-radius        4.0
              :scan-timeout       60.0
              :max-threads        50
-             :verbosity          0}
+             :verbosity          0
+             "AllowNPCXP"        true
+             :team-actions       true
+             "NPCXPPerSkillRank" 25}
 
   :filters {:only [:custom :containers :actors :valuables :value-junk
                    :collectables :resources :keys :books :aid :chems :epic :ammo :mines :thrown]
@@ -33,6 +36,14 @@
                      :helmets :packs :suits :assault-rifles :automatics :ballistics :chemical
                      :cryo "EMWeap" :explosives :fire :heavy-gun :lasers :melee :miniguns
                      :particle :pistols :rifles :shotguns :sniper :toolgrip :unarmed]}
+
+  :filters-to-ship {:only   [:contraband :value-junk :junk :resources :flora :mining
+                             :books :food :booze :drinks :apparel :neuroamps :helmets
+                             :packs :suits :assault-rifles :automatics :ballistics
+                             :chemical :cryo "EMWeap" :explosives :fire :heavy-gun
+                             :lasers :melee :miniguns :particle :pistols :rifles :shotguns
+                             :sniper :toolgrip :unarmed]
+                    :except [:custom :keys :aid :chems :epic :ammo :mines :thrown]}
 
   :actions {:terminals  {:hack true}
             :doors      {:pick true}
