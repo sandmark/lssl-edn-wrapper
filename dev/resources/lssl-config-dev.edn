@@ -5,18 +5,18 @@
   :clothes      [:apparel :neuroamps]
   :armors       [:packs :suits :helmets]
   :foods-drinks [:food :booze :drinks]
-  :items        {:cutter 0x16758
-                 :aurora 0x2C5884}}
+  :items        {:cutter         0x16758
+                 :aurora         0x2C5884
+                 :legendary-core 0x10000800}}
 
  :profile
- {:empty {}
-
-  :default
+ {:default
   {:controls {:scan-radius        50.0
               :scan-interval      1.0
               :hand-scanner-only  false
               :allow-stealing     false
               :scan-timeout       30.0
+              :auto-scan          true
               :notify-on-complete true}
 
    :filters {:only [:terminals :doors        :containers :actors :valuables :ammo :keys
@@ -48,11 +48,15 @@
              [:exclude :actors     #ref [:aliases :items :cutter]]
              [:exclude :containers #ref [:aliases :items :aurora]]
              [:exclude :actors     #ref [:aliases :items :aurora]]
-             [:exclude :chems      #ref [:aliases :items :aurora]]]}
+             [:exclude :chems      #ref [:aliases :items :aurora]]
+             [:add :containers     #ref [:aliases :items :legendary-core]]
+             [:add :actors         #ref [:aliases :items :legendary-core]]]}
 
   :hotkeys {:hotkeys {"F2"                   [[:query-state :general]]
-                      "F3"                   [[:query-state :cancel-scan]]
-                      "Shift-F3"             [[:pour-anti-freeze]]
+                      "F3"                   [[:query-state :cancel-scan]
+                                              [:message "Cancelling scan..."]]
+                      "Shift-F3"             [[:pour-anti-freeze]
+                                              [:message "PourAntiFreeze called."]]
                       "F4"                   [[:action :books :bypass true]]
                       "Shift-F4"             [[:action :books :bypass true]]
                       "Home"                 [[:set :pause-scan true]]
@@ -65,6 +69,5 @@
                       "Shift-MouseWheelDown" ["player.setav speedmult 100"]
                       "Shift-MouseWheelUp"   ["player.setav speedmult 400"]}}}
 
- :lssl-config #merge [#ref [:profile :empty]
-                      #ref [:profile :default]
+ :lssl-config #merge [;; #ref [:profile :default]
                       #ref [:profile :hotkeys]]}
