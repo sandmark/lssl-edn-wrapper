@@ -248,9 +248,9 @@ calls `DumpExtendedFiltersAndExclusions`.
 
 calls `ResetLootedFlagInArea float`.
 
-- `[:poor-anti-freeze]`
+- `[:pour-anti-freeze]`
 
-calls `PoorAntiFreeze`.
+calls `PourAntiFreeze`.
 
 ### Others
 - `[:message string]`
