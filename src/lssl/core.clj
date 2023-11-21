@@ -47,16 +47,16 @@
   (for [[b f] (concat-flagged only except)]
     (p/transpile [:action f :to-ship b])))
 
-(defn ops->cmds [coll]
+(defn ops->cmd [coll]
   (str/join "; " (map (comp :cmd p/transpile) coll)))
 
 (defmethod init-key :hotkeys [_ m]
   (letfn [(->hotkey [[k ops]]
-            {:cmd (format "hotkey %s %s" k (ops->cmds ops))})]
+            {:cmd (format "hotkey %s %s" k (ops->cmd ops))})]
     (conj (map ->hotkey m) {:cmd load-hotkey-cmd})))
 
 (defmethod init-key :startup [_ ops]
-  [{:cmd (ops->cmds ops) :priority 10}])
+  [{:cmd (ops->cmd ops) :priority 10}])
 
 (defmethod init-key :actions [_ m]
   (for [[asfilter settings] m
@@ -69,8 +69,11 @@
 (defn sort-cmds [coll]
   (sort-by :priority coll))
 
+(defn add-delimiter [s]
+  (str s ";"))
+
 (defn convert [f]
-  (->> f aero/read-config init sort-cmds (map :cmd)))
+  (->> f aero/read-config init sort-cmds (map :cmd) (map add-delimiter)))
 
 (comment
   (init (aero/read-config (io/resource "lssl-config-dev.edn"))))

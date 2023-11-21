@@ -1,4 +1,6 @@
 # ChangeLog
+## 0.2.53-v0008
+- Fix typo of `PourAntiFreeze`
 ## 0.2.36-v0008
 - Support LSSL Version 0008.
 - Add a `:filters-to-ship` option.

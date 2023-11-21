@@ -18,8 +18,8 @@
 (defn transpile-lssl [module method args]
   (let [module (keyword->camel module)
         method (keyword->camel method)
-        args   (map papyrus-value args)]
-    (format "cgf \"LSSL:%s.%s\" %s" module method (str/join " " args))))
+        args   (->> args (map papyrus-value) (str/join " "))]
+    (str "cgf \"LSSL:" module "." method "\"" (when (seq args) (str " " args)))))
 
 (defn transpile-interface [method & args]
   (transpile-lssl :interface method args))
@@ -98,8 +98,8 @@
 (defmethod transpile :reset [[_ x]]
   {:cmd (transpile-debugger :reset-looted-flag-in-area x)})
 
-(defmethod transpile :poor-anti-freeze [_]
-  {:cmd "cgf \"LSSL:Debugger.PoorAntiFreeze\""})
+(defmethod transpile :pour-anti-freeze [_]
+  {:cmd "cgf \"LSSL:Debugger.PourAntiFreeze\""})
 
 (defmethod transpile :query-state [[_ control]]
   {:cmd (transpile-interface :query-state control)})

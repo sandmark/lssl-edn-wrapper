@@ -5,7 +5,8 @@
   :clothes      [:apparel :neuroamps]
   :armors       [:packs :suits :helmets]
   :foods-drinks [:food :booze :drinks]
-  :cutter       0x16758}
+  :items        {:cutter 0x16758
+                 :aurora 0x2C5884}}
 
  :profile
  {:empty {}
@@ -42,18 +43,25 @@
    :actions {:containers {:pick true :search true}
              :books      {:bypass true}
              :terminals  {:hack true}}
-   :startup [[:exclude :containers #ref [:aliases :cutter]]
-             [:exclude :actors     #ref [:aliases :cutter]]]}
+
+   :startup [[:exclude :containers #ref [:aliases :items :cutter]]
+             [:exclude :actors     #ref [:aliases :items :cutter]]
+             [:exclude :containers #ref [:aliases :items :aurora]]
+             [:exclude :actors     #ref [:aliases :items :aurora]]
+             [:exclude :chems      #ref [:aliases :items :aurora]]]}
 
   :hotkeys {:hotkeys {"F2"                   [[:query-state :general]]
-                      "F3"                   [[:query-state :cancel]]
-                      "F4"                   [[:action :books :bypass true]
-                                              [:message "Books Bypassing is disabled."]]
-                      "Shift-F4"             [[:action :books :bypass true]
-                                              [:message "Books Bypassing is enabled."]]
+                      "F3"                   [[:query-state :cancel-scan]]
+                      "Shift-F3"             [[:pour-anti-freeze]]
+                      "F4"                   [[:action :books :bypass true]]
+                      "Shift-F4"             [[:action :books :bypass true]]
                       "Home"                 [[:set :pause-scan true]]
                       "Shift-Home"           [[:set :pause-scan false]]
                       "End"                  [[:cancel-scan]]
+                      "F8"                   ["Set 0005BD98 to 1"
+                                              [:message "Contraband Scan Enabled."]]
+                      "Shift-F8"             ["Set 0005BD98 to 0"
+                                              [:message "Contraband Scan Disabled."]]
                       "Shift-MouseWheelDown" ["player.setav speedmult 100"]
                       "Shift-MouseWheelUp"   ["player.setav speedmult 400"]}}}
 
