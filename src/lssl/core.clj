@@ -67,7 +67,7 @@
   (mapcat (fn [[k v]] (init-key k v)) lssl-config))
 
 (defn sort-cmds [coll]
-  (sort-by :priority coll))
+  (sort-by #(get % :priority 1) coll))
 
 (defn add-delimiter [s]
   (str s ";"))
