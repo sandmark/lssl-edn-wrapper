@@ -19,22 +19,14 @@
 
  :profile
  {:startup
-  {:startup [[:exclude :containers #ref [:aliases :items :cutter]]
-             [:exclude :actors     #ref [:aliases :items :cutter]]
-             [:exclude :lasers     #ref [:aliases :items :cutter]]
-             [:exclude :unarmed    #ref [:aliases :items :cutter]]
-             [:exclude :containers #ref [:aliases :items :aurora]]
-             [:exclude :actors     #ref [:aliases :items :aurora]]
-             [:exclude :chems      #ref [:aliases :items :aurora]]
+  {:startup [;; [:exclude :containers #ref [:aliases :items :cutter]]
+             ;; [:exclude :actors     #ref [:aliases :items :cutter]]
+             ;; [:exclude :lasers     #ref [:aliases :items :cutter]]
+             ;; [:exclude :unarmed    #ref [:aliases :items :cutter]]
+             ;; [:exclude :containers #ref [:aliases :items :aurora]]
+             ;; [:exclude :actors     #ref [:aliases :items :aurora]]
+             ;; [:exclude :chems      #ref [:aliases :items :aurora]]
              [:add :custom         #ref [:aliases :items :legendary-core]]]}
-
-  :actions-without-picking
-  {:actions {:doors      {:pick false}
-             :terminals  {:hack false}
-             :containers {:pick false}}}
-
-  :smuggling
-  {:actions {:contraband {:smuggle true :to-ship :true}}}
 
   :default
   {:controls {:scan-radius        50.0
@@ -49,8 +41,7 @@
                     :aid       :collectables :resources  :chems  :books     :epic :custom
                     :mining    :flora
                     #ref [:aliases :guns]
-                    #ref [:aliases :foods-drinks]
-                    ]
+                    #ref [:aliases :foods-drinks]]
 
              :except [:toolgrip :melee :junk :unarmed :contraband :value-junk
                       #ref [:aliases :armors]
@@ -68,9 +59,8 @@
 
    :actions {:containers {:pick true :search true}
              :books      {:bypass true}
-             :terminals  {:hack true}}
-
-   }
+             :terminals  {:hack true}
+             :contraband {:smuggle true}}}
 
   :hotkeys {:hotkeys {"F2"                   [[:query-state :general]]
                       "F3"                   [[:query-state :cancel-scan]]
@@ -96,11 +86,8 @@
                                               [:message "Contraband Scan Disabled."]]
                       "Shift-MouseWheelDown" ["player.setav speedmult 100"]
                       "Shift-MouseWheelUp"   ["player.setav speedmult 400"]
+                      "F1"                   #ref [:aliases :hotkeys :use-quantum-essense]}}}
 
-                      "F1" #ref [:aliases :hotkeys :use-quantum-essense]}}}
-
- :lssl-config #merge [;; #ref [:profile :default]
-                      ;; #ref [:profile :actions-without-picking]
+ :lssl-config #merge [#ref [:profile :default]
                       #ref [:profile :startup]
-                      ;; #ref [:profile :smuggling]
                       #ref [:profile :hotkeys]]}

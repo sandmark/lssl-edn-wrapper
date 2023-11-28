@@ -64,7 +64,13 @@
 
     (testing "Delimiter"
       (is (match? (m/embeds [#";$"])
-                  (sut/convert test-config)))))
+                  (sut/convert test-config))))
+
+    (testing "SilentInterface"
+      (is (match? "cgf \"LSSL:Interface.SetBoolControl\" \"SilentInterface\" true;"
+                  (first (sut/convert (java.io.StringReader. "{:lssl-config {:controls {:scan-radius 50.0}}}")))))
+      (is (match? "cgf \"LSSL:Interface.SetBoolControl\" \"SilentInterface\" false;"
+                  (last (sut/convert (java.io.StringReader. "{:lssl-config {}}")))))))
 
   (testing "Logging"
     (testing "Filter"
