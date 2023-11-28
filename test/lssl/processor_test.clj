@@ -76,9 +76,7 @@
     (is (match? {:cmd #"LSSL:Debugger\.DumpExtendedFiltersAndExclusions"}
                 (sut/transpile [:dump-extended])))
     (is (match? {:cmd (m/all-of #"Debugger\.ResetLootedFlagInArea" #(str/ends-with? % "50.0"))}
-                (sut/transpile [:reset 50.0])))
-    (is (match? {:cmd #"LSSL:Debugger\.PourAntiFreeze"}
-                (sut/transpile [:pour-anti-freeze]))))
+                (sut/transpile [:reset 50.0]))))
 
   (testing "Papyrus Debug.Notification"
     (is (match? {:cmd "cgf \"Debug.Notification\" \"debug\""}
