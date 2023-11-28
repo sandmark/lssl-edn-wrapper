@@ -1,4 +1,7 @@
 # ChangeLog
+## 0.3.64-v0009a
+- Remove `PourAntiFreeze` as well as LSSL-v0009.
+- Suppress all in-game notifications using `SilentInterface`.
 ## 0.2.53-v0008
 - Fix typo of `PourAntiFreeze`
 ## 0.2.36-v0008
