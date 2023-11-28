@@ -63,17 +63,24 @@
         [asaction bool]     settings]
     (p/transpile [:action asfilter asaction bool])))
 
+(defn suppress-notification [coll]
+  (let [suppress #(let [priority (if % -1 ##Inf)]
+                    (-> [:set :silent-interface %]
+                        p/transpile
+                        (assoc :priority priority)))]
+    (conj coll (suppress true) (suppress false))))
+
 (defn init [{:keys [lssl-config]}]
   (mapcat (fn [[k v]] (init-key k v)) lssl-config))
 
 (defn sort-cmds [coll]
-  (sort-by :priority coll))
+  (sort-by #(get % :priority 1) coll))
 
 (defn add-delimiter [s]
   (str s ";"))
 
 (defn convert [f]
-  (->> f aero/read-config init sort-cmds (map :cmd) (map add-delimiter)))
+  (->> f aero/read-config init suppress-notification sort-cmds (map :cmd) (map add-delimiter)))
 
 (comment
   (init (aero/read-config (io/resource "lssl-config-dev.edn"))))

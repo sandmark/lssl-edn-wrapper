@@ -98,9 +98,6 @@
 (defmethod transpile :reset [[_ x]]
   {:cmd (transpile-debugger :reset-looted-flag-in-area x)})
 
-(defmethod transpile :pour-anti-freeze [_]
-  {:cmd "cgf \"LSSL:Debugger.PourAntiFreeze\""})
-
 (defmethod transpile :query-state [[_ control]]
   {:cmd (transpile-interface :query-state control)})
 

@@ -5,26 +5,43 @@
   :clothes      [:apparel :neuroamps]
   :armors       [:packs :suits :helmets]
   :foods-drinks [:food :booze :drinks]
-  :items        {:cutter 0x16758
-                 :aurora 0x2C5884}}
+  :items        {:cutter         0x16758
+                 :aurora         0x2C5884
+                 :legendary-core 0x10000800}
+
+  :hotkeys
+  {:use-quantum-essense ["if player.getav 1447b7 => 1"
+                         "player.cast 1447b9 player left"
+                         [:message "Starborn Powers Amplified."]
+                         "else"
+                         [:message "Not Enough Quantum Essense."]
+                         "endif"]}}
 
  :profile
- {:empty {}
+ {:startup
+  {:startup [;; [:exclude :containers #ref [:aliases :items :cutter]]
+             ;; [:exclude :actors     #ref [:aliases :items :cutter]]
+             ;; [:exclude :lasers     #ref [:aliases :items :cutter]]
+             ;; [:exclude :unarmed    #ref [:aliases :items :cutter]]
+             ;; [:exclude :containers #ref [:aliases :items :aurora]]
+             ;; [:exclude :actors     #ref [:aliases :items :aurora]]
+             ;; [:exclude :chems      #ref [:aliases :items :aurora]]
+             [:add :custom         #ref [:aliases :items :legendary-core]]]}
 
   :default
   {:controls {:scan-radius        50.0
               :scan-interval      1.0
               :hand-scanner-only  false
               :allow-stealing     false
-              :scan-timeout       30.0
+              :scan-timeout       60.0
+              :auto-scan          true
               :notify-on-complete true}
 
    :filters {:only [:terminals :doors        :containers :actors :valuables :ammo :keys
                     :aid       :collectables :resources  :chems  :books     :epic :custom
                     :mining    :flora
                     #ref [:aliases :guns]
-                    #ref [:aliases :foods-drinks]
-                    ]
+                    #ref [:aliases :foods-drinks]]
 
              :except [:toolgrip :melee :junk :unarmed :contraband :value-junk
                       #ref [:aliases :armors]
@@ -32,39 +49,45 @@
                       #ref [:aliases :granades]]}
 
    :filters-to-ship {:only   [:toolgrip :melee :junk :unarmed :contraband :value-junk :books :chems
-                              :mining   :flora
+                              :mining   :flora :epic
                               #ref [:aliases :armors]
                               #ref [:aliases :clothes]
                               #ref [:aliases :granades]
                               #ref [:aliases :guns]
                               #ref [:aliases :foods-drinks]]
-                     :except [:custom :ammo :keys :aid :epic]}
+                     :except [:custom :ammo :keys :aid]}
 
    :actions {:containers {:pick true :search true}
              :books      {:bypass true}
-             :terminals  {:hack true}}
-
-   :startup [[:exclude :containers #ref [:aliases :items :cutter]]
-             [:exclude :actors     #ref [:aliases :items :cutter]]
-             [:exclude :containers #ref [:aliases :items :aurora]]
-             [:exclude :actors     #ref [:aliases :items :aurora]]
-             [:exclude :chems      #ref [:aliases :items :aurora]]]}
+             :terminals  {:hack true}
+             :contraband {:smuggle true}}}
 
   :hotkeys {:hotkeys {"F2"                   [[:query-state :general]]
                       "F3"                   [[:query-state :cancel-scan]]
-                      "Shift-F3"             [[:pour-anti-freeze]]
                       "F4"                   [[:action :books :bypass true]]
-                      "Shift-F4"             [[:action :books :bypass true]]
+                      "Shift-F4"             [[:action :books :bypass false]]
+                      "F5"                   [[:set :scan-timeout 60.0]]
+                      "Shift-F5"             [[:set :scan-timeout 120.0]]
+                      "F6"                   [[:set :hand-scanner-only true]]
+                      "Shift-F6"             [[:set :hand-scanner-only false]]
                       "Home"                 [[:set :pause-scan true]]
                       "Shift-Home"           [[:set :pause-scan false]]
-                      "End"                  [[:cancel-scan]]
+                      "End"                  [[:cancel-scan]
+                                              [:message "CancelScan triggered."]]
+                      "Delete"               [[:action :doors :pick false]
+                                              [:action :terminals :hack false]
+                                              [:action :containers :pick false]]
+                      "Shift-Delete"         [[:action :doors :pick true]
+                                              [:action :terminals :hack true]
+                                              [:action :containers :pick true]]
                       "F8"                   ["Set 0005BD98 to 1"
                                               [:message "Contraband Scan Enabled."]]
                       "Shift-F8"             ["Set 0005BD98 to 0"
                                               [:message "Contraband Scan Disabled."]]
                       "Shift-MouseWheelDown" ["player.setav speedmult 100"]
-                      "Shift-MouseWheelUp"   ["player.setav speedmult 400"]}}}
+                      "Shift-MouseWheelUp"   ["player.setav speedmult 400"]
+                      "F1"                   #ref [:aliases :hotkeys :use-quantum-essense]}}}
 
- :lssl-config #merge [#ref [:profile :empty]
-                      #ref [:profile :default]
+ :lssl-config #merge [#ref [:profile :default]
+                      #ref [:profile :startup]
                       #ref [:profile :hotkeys]]}

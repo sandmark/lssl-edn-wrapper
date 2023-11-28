@@ -248,10 +248,6 @@ calls `DumpExtendedFiltersAndExclusions`.
 
 calls `ResetLootedFlagInArea float`.
 
-- `[:pour-anti-freeze]`
-
-calls `PourAntiFreeze`.
-
 ### Others
 - `[:message string]`
 
