@@ -33,11 +33,13 @@
   {:cmd (transpile-interface :cancel-scan)})
 
 (defmethod transpile :set [[_ control val :as call]]
-  {:cmd
-   (cond (int? val)     (transpile-interface :set-int-control control val)
-         (float? val)   (transpile-interface :set-float-control control val)
-         (boolean? val) (transpile-interface :set-bool-control control val)
-         :else          (log/error "Invalid value:" call))})
+  (if (= (keyword->camel control) "SilentInterface")
+    {:priority -1 :cmd (transpile-interface :set-bool-control control val)}
+    {:cmd
+     (cond (int? val)     (transpile-interface :set-int-control control val)
+           (float? val)   (transpile-interface :set-float-control control val)
+           (boolean? val) (transpile-interface :set-bool-control control val)
+           :else          (log/error "Invalid value:" call))}))
 
 (defmethod transpile :toggle-control [[_ control]]
   {:cmd (transpile-interface :toggle-bool-control control)})
