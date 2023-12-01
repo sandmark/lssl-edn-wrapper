@@ -15,6 +15,13 @@
                          [:message "Starborn Powers Amplified."]
                          "else"
                          [:message "Not Enough Quantum Essense."]
+                         "endif"]
+   :use-trauma-pack     ["if player.getitemcount 29A847 >= 1"
+                         "player.equipitem 29A847"
+                         "elseif player.getitemcount 2a9de8 >= 1"
+                         "player.equipitem 2a9de8"
+                         "else"
+                         [:message "No TraumaPack/EmergencyKit is in your inventory!"]
                          "endif"]}}
 
  :profile
@@ -35,18 +42,20 @@
               :allow-stealing     false
               :scan-timeout       60.0
               :auto-scan          true
-              :notify-on-complete true}
+              :notify-on-complete true
+              :visual-effect      true
+              :silent-interface   true}
 
    :filters {:only [:terminals :doors        :containers :actors :valuables :ammo :keys
                     :aid       :collectables :resources  :chems  :books     :epic :custom
                     :mining    :flora
                     #ref [:aliases :guns]
-                    #ref [:aliases :foods-drinks]]
+                    #ref [:aliases :foods-drinks]
+                    #ref [:aliases :granades]]
 
              :except [:toolgrip :melee :junk :unarmed :contraband :value-junk
                       #ref [:aliases :armors]
-                      #ref [:aliases :clothes]
-                      #ref [:aliases :granades]]}
+                      #ref [:aliases :clothes]]}
 
    :filters-to-ship {:only   [:toolgrip :melee :junk :unarmed :contraband :value-junk :books :chems
                               :mining   :flora :epic
@@ -70,8 +79,10 @@
                       "Shift-F5"             [[:set :scan-timeout 120.0]]
                       "F6"                   [[:set :hand-scanner-only true]]
                       "Shift-F6"             [[:set :hand-scanner-only false]]
-                      "Home"                 [[:set :pause-scan true]]
-                      "Shift-Home"           [[:set :pause-scan false]]
+                      "Home"                 [[:set :silent-interface false]
+                                              [:set :pause-scan true]]
+                      "Shift-Home"           [[:set :silent-interface false]
+                                              [:set :pause-scan false]]
                       "End"                  [[:cancel-scan]
                                               [:message "CancelScan triggered."]]
                       "Delete"               [[:action :doors :pick false]
@@ -86,7 +97,12 @@
                                               [:message "Contraband Scan Disabled."]]
                       "Shift-MouseWheelDown" ["player.setav speedmult 100"]
                       "Shift-MouseWheelUp"   ["player.setav speedmult 400"]
-                      "F1"                   #ref [:aliases :hotkeys :use-quantum-essense]}}}
+                      "F1"                   #ref [:aliases :hotkeys :use-quantum-essense]
+                      ;; https://www.nexusmods.com/starfield/mods/2087
+                      ;; https://www.nexusmods.com/starfield/articles/108
+                      "NumPad+"              #ref [:aliases :hotkeys :use-trauma-pack]
+                      "NumPad0"              [[:message "Warn: `movetoqt` may break your game!"]
+                                              "movetoqt"]}}}
 
  :lssl-config #merge [#ref [:profile :default]
                       #ref [:profile :startup]

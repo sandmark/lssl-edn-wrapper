@@ -64,13 +64,7 @@
 
     (testing "Delimiter"
       (is (match? (m/embeds [#";$"])
-                  (sut/convert test-config))))
-
-    (testing "SilentInterface"
-      (is (match? "cgf \"LSSL:Interface.SetBoolControl\" \"SilentInterface\" true;"
-                  (first (sut/convert (java.io.StringReader. "{:lssl-config {:controls {:scan-radius 50.0}}}")))))
-      (is (match? "cgf \"LSSL:Interface.SetBoolControl\" \"SilentInterface\" false;"
-                  (last (sut/convert (java.io.StringReader. "{:lssl-config {}}")))))))
+                  (sut/convert test-config)))))
 
   (testing "Logging"
     (testing "Filter"
@@ -83,3 +77,12 @@
                       (let [[e & rest] (into [] sut/available-filters)]
                         (sut/init {:lssl-config
                                    {:filters {:only rest :except [[e]]}}})))))))))
+
+(deftest edge-case-test
+  (testing "SilentInterface"
+    (testing "should be first"
+      (let [settings (str {:lssl-config {:controls {:scan-radius 50.0 :silent-interface true}}})]
+        (is (match? (m/prefix [#"SilentInterface"])
+                    (sut/convert (java.io.StringReader. settings))))
+        (is (match? [identity #"ScanRadius"]
+                    (sut/convert (java.io.StringReader. settings))))))))
