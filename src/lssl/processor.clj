@@ -107,4 +107,6 @@
   {:cmd (transpile-interface :query-state control)})
 
 (defmethod transpile :default [v]
-  {:cmd v})
+  (if (string? v)
+    {:cmd v}
+    (log/warnf "no such command: %s" (keyword->camel v))))

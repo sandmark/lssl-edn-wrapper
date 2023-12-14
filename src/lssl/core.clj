@@ -48,7 +48,7 @@
     (p/transpile [:action f :to-ship b])))
 
 (defn ops->cmd [coll]
-  (str/join "; " (map (comp :cmd p/transpile) coll)))
+  (str/join "; " (keep (comp :cmd p/transpile) coll)))
 
 (defmethod init-key :hotkeys [_ m]
   (letfn [(->hotkey [[k ops]]
@@ -73,7 +73,7 @@
   (str s ";"))
 
 (defn convert [f]
-  (->> f aero/read-config init sort-cmds (map :cmd) (map add-delimiter)))
+  (->> f aero/read-config init sort-cmds (keep :cmd) (map add-delimiter)))
 
 (comment
   (init (aero/read-config (io/resource "lssl-config-dev.edn"))))
