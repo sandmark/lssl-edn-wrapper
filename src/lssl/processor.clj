@@ -91,6 +91,9 @@
 (defmethod transpile :dump-extended [[_]]
   {:cmd (transpile-debugger :dump-extended-filters-and-exclusions)})
 
+(defmethod transpile :remove-non-playable-items [[_]]
+  {:cmd (transpile-debugger :remove-non-playable-items)})
+
 (defmethod transpile :raw [[_ & cmds]]
   {:cmd (str/join "; " cmds)})
 
@@ -104,4 +107,6 @@
   {:cmd (transpile-interface :query-state control)})
 
 (defmethod transpile :default [v]
-  {:cmd v})
+  (if (string? v)
+    {:cmd v}
+    (log/warnf "no such command: %s" (keyword->camel v))))

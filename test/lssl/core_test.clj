@@ -62,6 +62,12 @@
       (is (match? (m/embeds [(m/all-of #"second" #(str/ends-with? % "last\";"))])
                   (sut/convert test-config))))
 
+    (testing "Incorrect commands"
+      (is (match? ["tcl; tgm;"]
+                  (sut/convert (java.io.StringReader.
+                                (str {:lssl-config
+                                      {:startup ["tcl" [:incorrect-command] "tgm"]}}))))))
+
     (testing "Delimiter"
       (is (match? (m/embeds [#";$"])
                   (sut/convert test-config)))))

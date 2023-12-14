@@ -10,7 +10,7 @@
                  :legendary-core 0x10000800}
 
   :hotkeys
-  {:use-quantum-essense ["if player.getav 1447b7 => 1"
+  {:use-quantum-essense ["if player.getav 1447b7 >= 1"
                          "player.cast 1447b9 player left"
                          [:message "Starborn Powers Amplified."]
                          "else"
@@ -20,30 +20,37 @@
                          "player.equipitem 29A847"
                          "elseif player.getitemcount 2a9de8 >= 1"
                          "player.equipitem 2a9de8"
+                         "elseif player.getitemcount ABF9"
+                         "player.equipitem ABF9"
                          "else"
-                         [:message "No TraumaPack/EmergencyKit is in your inventory!"]
-                         "endif"]}}
+                         [:message "MedKit/TraumaPack/EmergencyKit is not in your inventory!"]
+                         "endif"]
+   :skip-vladimir       ["SetStage 000854e8 10"
+                         [:message "Fowarded mission: Power from Beyond"]]}}
 
  :profile
  {:startup
-  {:startup [;; [:exclude :containers #ref [:aliases :items :cutter]]
-             ;; [:exclude :actors     #ref [:aliases :items :cutter]]
-             ;; [:exclude :lasers     #ref [:aliases :items :cutter]]
-             ;; [:exclude :unarmed    #ref [:aliases :items :cutter]]
-             ;; [:exclude :containers #ref [:aliases :items :aurora]]
-             ;; [:exclude :actors     #ref [:aliases :items :aurora]]
-             ;; [:exclude :chems      #ref [:aliases :items :aurora]]
-             [:add :custom         #ref [:aliases :items :legendary-core]]]}
+  {:startup [[:exclude :lasers #ref [:aliases :items :cutter]]
+             [:exclude :toolgrip #ref [:aliases :items :cutter]]
+             [:exclude :toolgrip #ref [:aliases :items :cutter]]
+             [:exclude :contraband #ref [:aliases :items :aurora]]
+             [:exclude :chems      #ref [:aliases :items :aurora]]
+             [:add :custom         #ref [:aliases :items :legendary-core]]
+             [:add :custom 0x29a847]
+             [:add :custom 0x2a9de8]
+             [:add :custom 0xabf9]
+             [:remove-non-playable-items]]}
 
   :default
   {:controls {:scan-radius        50.0
               :scan-interval      1.0
               :hand-scanner-only  false
               :allow-stealing     false
-              :scan-timeout       60.0
+              :scan-timeout       120.0
               :auto-scan          true
               :notify-on-complete true
               :visual-effect      true
+              :verbosity          3
               :silent-interface   true}
 
    :filters {:only [:terminals :doors        :containers :actors :valuables :ammo :keys
@@ -58,13 +65,13 @@
                       #ref [:aliases :clothes]]}
 
    :filters-to-ship {:only   [:toolgrip :melee :junk :unarmed :contraband :value-junk :books :chems
-                              :mining   :flora :epic
+                              :mining   :flora :epic :aid
                               #ref [:aliases :armors]
                               #ref [:aliases :clothes]
                               #ref [:aliases :granades]
                               #ref [:aliases :guns]
                               #ref [:aliases :foods-drinks]]
-                     :except [:custom :ammo :keys :aid]}
+                     :except [:custom :ammo :keys]}
 
    :actions {:containers {:pick true :search true}
              :books      {:bypass true}
@@ -72,17 +79,17 @@
              :contraband {:smuggle true}}}
 
   :hotkeys {:hotkeys {"F2"                   [[:query-state :general]]
-                      "F3"                   [[:query-state :cancel-scan]]
-                      "F4"                   [[:action :books :bypass true]]
-                      "Shift-F4"             [[:action :books :bypass false]]
-                      "F5"                   [[:set :scan-timeout 60.0]]
-                      "Shift-F5"             [[:set :scan-timeout 120.0]]
-                      "F6"                   [[:set :hand-scanner-only true]]
-                      "Shift-F6"             [[:set :hand-scanner-only false]]
-                      "Home"                 [[:set :silent-interface false]
-                                              [:set :pause-scan true]]
-                      "Shift-Home"           [[:set :silent-interface false]
-                                              [:set :pause-scan false]]
+                      "F3"                   [[:toggle-control :silent-interface true]
+                                              [:message "Toggle SilentInterface"]]
+                      "F4"                   [[:export]]
+                      "F5"                   [[:set :scan-timeout 120.0]]
+                      "Shift-F5"             [[:set :scan-timeout 60.0]]
+                      "F6"                   [[:set :scan-radius 50.0]]
+                      "Shift-F6"             [[:set :scan-radius 200.0]]
+                      "Insert"               [[:set :hand-scanner-only true]]
+                      "Shift-Insert"         [[:set :hand-scanner-only false]]
+                      "Home"                 [[:set :pause-scan true]]
+                      "Shift-Home"           [[:set :pause-scan false]]
                       "End"                  [[:cancel-scan]
                                               [:message "CancelScan triggered."]]
                       "Delete"               [[:action :doors :pick false]
@@ -100,9 +107,11 @@
                       "F1"                   #ref [:aliases :hotkeys :use-quantum-essense]
                       ;; https://www.nexusmods.com/starfield/mods/2087
                       ;; https://www.nexusmods.com/starfield/articles/108
-                      "NumPad+"              #ref [:aliases :hotkeys :use-trauma-pack]
-                      "NumPad0"              [[:message "Warn: `movetoqt` may break your game!"]
-                                              "movetoqt"]}}}
+                      "Q"                    #ref [:aliases :hotkeys :use-trauma-pack]
+                      "NumPad0"              ["save before_movetoqt"
+                                              [:message "Warn: `movetoqt` may break your game!"]
+                                              "movetoqt"]
+                      "NumPad1"              #ref [:aliases :hotkeys :skip-vladimir]}}}
 
  :lssl-config #merge [#ref [:profile :default]
                       #ref [:profile :startup]

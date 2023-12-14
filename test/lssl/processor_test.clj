@@ -78,6 +78,21 @@
     (is (match? {:cmd (m/all-of #"Debugger\.ResetLootedFlagInArea" #(str/ends-with? % "50.0"))}
                 (sut/transpile [:reset 50.0]))))
 
+  (testing "LSSL:Debugger.RemoveNonPlayableItems"
+    (is (match? {:cmd #"Debugger\.RemoveNonPlayableItems"}
+                (sut/transpile [:remove-non-playable-items]))))
+
+  (testing "Incorrect command"
+    (testing "should be nil"
+      (is (match? nil? (sut/transpile [:command-not-exists]))))
+    (testing "should be warned"
+      (is (match? #"no such command"
+                  (with-out-str
+                    (sut/transpile [:command-not-exists])))))
+    (testing "should be passed when string"
+      (is (match? {:cmd "tcl"}
+                  (sut/transpile "tcl")))))
+
   (testing "Papyrus Debug.Notification"
     (is (match? {:cmd "cgf \"Debug.Notification\" \"debug\""}
                 (sut/transpile [:message "debug"]))))

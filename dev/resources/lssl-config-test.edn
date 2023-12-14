@@ -1,5 +1,6 @@
 {:lssl-config
  {:startup [[:message "second"]
+            [:incorrect-command]
             [:message "last"]]
   :filters {:only [:doors]}
   :hotkeys {"A" ["Something"]}}}
