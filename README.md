@@ -248,6 +248,10 @@ calls `DumpExtendedFiltersAndExclusions`.
 
 calls `ResetLootedFlagInArea float`.
 
+- `[:remove-non-playable-items]`
+
+calls `RemoveNonPlayableItems`.
+
 ### Others
 - `[:message string]`
 

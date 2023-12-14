@@ -1,4 +1,7 @@
 # ChangeLog
+## 0.3.72-v0010
+- Add `:remove-non-playable-items`
+- Add warning for incorrect commands which should be ignored.
 ## 0.3.64-v0009a
 - Remove `PourAntiFreeze` as well as LSSL-v0009.
 - Suppress all in-game notifications using `SilentInterface`.
